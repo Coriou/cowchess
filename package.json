@@ -8,7 +8,7 @@
         "build": "backpack build"
     },
     "dependencies": {
-        "@babel/preset-react": "^7.0.0",
+        "@nx-js/observer-util": "^4.2.2",
         "axios": "^0.18.0",
         "convert-hrtime": "^2.0.0",
         "figlet": "^1.2.1",
@@ -20,6 +20,7 @@
     },
     "devDependencies": {
         "@babel/core": "^7.4.0",
+        "@babel/preset-react": "^7.0.0",
         "backpack-core": "^0.8.3"
     }
 }
