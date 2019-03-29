@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer } from "react"
-// import { observable, observe } from "@nx-js/observer-util"
+import { BehaviorSubject } from "rxjs"
 
 export const Context = createContext()
 
@@ -28,90 +28,85 @@ export const initialState = {
 }
 
 // The "reactive" state
-// export let globalState = observable(initialState)
-export let globalState = initialState
+export const state = new BehaviorSubject(initialState)
 
-export const reducer = (state, action) => {
+export const reducer = (oldState, action) => {
 	const { type, value } = action
 	switch (type) {
 		case "updateGames":
-			if (!Array.isArray(value) || !value.length) return state
+			if (!Array.isArray(value) || !value.length) return oldState
 
 			value.forEach(game => {
-				const toUpdateIndex = state.games.findIndex(
+				const toUpdateIndex = oldState.games.findIndex(
 					g => g.id === game.id
 				)
 
 				// Update existing game
-				if (toUpdateIndex > -1) state.games[toUpdateIndex] = game
+				if (toUpdateIndex > -1) oldState.games[toUpdateIndex] = game
 				// Add a new game to the list
-				else state.games.push(game)
+				else oldState.games.push(game)
 			})
 
 			break
 		// return state
 
 		case "addComputingGame":
-			if (!value || !value.id) return state
+			if (!value || !value.id) return oldState
 
 			// We're working here
-			if (!state.isComputing) state.isComputing = true
+			if (!oldState.isComputing) oldState.isComputing = true
 
-			const toAddIndex = state.computingGames.findIndex(
+			const toAddIndex = oldState.computingGames.findIndex(
 				g => g.id === value.id
 			)
 
 			// Update an existing computing game
-			if (toAddIndex > -1) state.computingGames[toAddIndex] = value
+			if (toAddIndex > -1) oldState.computingGames[toAddIndex] = value
 			// Add a new game to the list
-			else state.computingGames.push(value)
+			else oldState.computingGames.push(value)
 
 			break
 		// return state
 
 		case "removeComputingGame":
-			if (!value || !value.id) return state
+			if (!value || !value.id) return oldState
 
-			const toRemoveIndex = state.computingGames.findIndex(
+			const toRemoveIndex = oldState.computingGames.findIndex(
 				g => g.id === value.id
 			)
 
 			// Remove this game
 			if (toRemoveIndex > -1)
-				state.computingGames.splice(toRemoveIndex, 1)
+				oldState.computingGames.splice(toRemoveIndex, 1)
 
 			// Check if we're still computing something
-			if (state.isComputing && !state.computingGames.length)
-				state.isComputing = false
+			if (oldState.isComputing && !oldState.computingGames.length)
+				oldState.isComputing = false
 
 			break
 		// return state
 
 		case "addEngine":
-			if (!value || !value.id || !value.engine) return state
+			if (!value || !value.id || !value.engine) return oldState
 
-			const engineToAddIndex = state.engines.findIndex(
+			const engineToAddIndex = oldState.engines.findIndex(
 				e => e.id === value.id
 			)
 
 			// Add or update the engine
-			if (engineToAddIndex > -1) state.engines[engineToAddIndex] = value
-			else state.engines.push(value)
+			if (engineToAddIndex > -1) oldState.engines[engineToAddIndex] = value
+			else oldState.engines.push(value)
 
 			// return state
 			break
 
 		default:
-			// return observable({ ...state, ...action })
-			// return { ...state, ...action }
-			state = { ...state, ...action }
+			oldState = { ...oldState, ...action }
 
 			break
 	}
 
-	// state = observable(state)
-	globalState = state
-	// observe(() => (globalState = state))
+	state.next(oldState)
 
-	return state
+	return oldState
 }

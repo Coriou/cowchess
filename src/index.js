@@ -12,4 +12,6 @@ const Wrapper = () => {
 	)
 }
 
-render(<Wrapper />)
+const { unmount } = render(<Wrapper />)
+
+// setTimeout(unmount, 10e3)
