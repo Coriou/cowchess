@@ -23,6 +23,7 @@ export const initialState = {
 	computingGames: [],
 	engines: [],
 	hasInit: false,
+	username: "",
 
 	error: false
 }
@@ -32,6 +33,7 @@ export const state = new BehaviorSubject(initialState)
 
 export const reducer = (oldState, action) => {
 	const { type, value } = action
+
 	switch (type) {
 		case "syncGames":
 			if (!Array.isArray(value) || !value.length) return oldState

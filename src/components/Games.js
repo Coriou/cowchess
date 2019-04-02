@@ -79,10 +79,10 @@ const Move = ({ game }) => {
 }
 
 export default props => {
-	const [{ games }, dispatch] = useStore()
+	const [{ games, username }, dispatch] = useStore()
 
 	useEffect(() => {
-		updateGames(dispatch, state)
+		updateGames(username, dispatch, state)
 	}, [])
 
 	return (

@@ -3,6 +3,7 @@ import { exec } from "child_process"
 import { Engine } from "node-uci"
 import axios from "axios"
 import convertHR from "convert-hrtime"
+import fs from "fs"
 
 const execute = (command, callback) => {
 	exec(command, function(error, stdout, stderr) {
@@ -172,13 +173,13 @@ export const createEngine = (options = {}) => {
 }
 
 // The main logic
-export const updateGames = (dispatch, state) => {
+export const updateGames = (username, dispatch, state) => {
 	let localState = {}
 	state.subscribe(s => (localState = s))
 
 	dispatch({ isCheckingGames: true })
 
-	getGames({ username: "cowriou" })
+	getGames({ username: username })
 		.then(apiGames => {
 			// Could be our first run, let the app know we good
 			if (!localState.hasInit) {
@@ -231,10 +232,10 @@ export const updateGames = (dispatch, state) => {
 			}
 
 			// Remove games that are over
-			dispatch({
-				type: "syncGames",
-				value: apiGames
-			})
+			// dispatch({
+			// 	type: "syncGames",
+			// 	value: apiGames
+			// })
 
 			// dispatch({ error: localState.hasInit.toString() })
 
@@ -289,14 +290,33 @@ export const updateGames = (dispatch, state) => {
 				.finally(() => {
 					// This dispatch is more to trigger a re-render than anything else
 					dispatch({ isComputing: false })
-					setTimeout(() => updateGames(dispatch, state), 15e3)
+					setTimeout(() => updateGames(username, dispatch, state), 15e3)
 				})
 		})
 		.catch(err => {
 			dispatch({ error: err })
-			setTimeout(() => updateGames(dispatch, state), 15e3)
+			setTimeout(() => updateGames(username, dispatch, state), 15e3)
 		})
 		.finally(() => {
 			dispatch({ lastCheck: new Date(), isCheckingGames: false })
 		})
+}
+
+export const readSettings = () => {
+	let settings = false
+
+	try {
+		settings = fs.readFileSync("./settings.json")
+		settings = JSON.parse(settings)
+	} catch (err) {}
+
+	return settings
+}
+
+export const writeSettings = data => {
+	const oldSettings = readSettings()
+
+	if (oldSettings) data = Object.assign({}, oldSettings, data)
+
+	fs.writeFileSync("./settings.json", JSON.stringify(data))
 }

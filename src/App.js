@@ -6,7 +6,7 @@ import MainContent from "./components/MainContent"
 import Games from "./components/Games"
 import ErrorContainer from "./components/ErrorContainer"
 
-export default props => {
+export default () => {
 	return (
 		<Container fullscreen>
 			<Header />
