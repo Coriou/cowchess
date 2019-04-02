@@ -33,6 +33,16 @@ export const state = new BehaviorSubject(initialState)
 export const reducer = (oldState, action) => {
 	const { type, value } = action
 	switch (type) {
+		case "syncGames":
+			if (!Array.isArray(value) || !value.length) return oldState
+
+			// Remove games that are over
+			oldState.games = oldState.games.filter(g =>
+				value.map(v => v.id).includes(g.id)
+			)
+
+			break
+
 		case "updateGames":
 			if (!Array.isArray(value) || !value.length) return oldState
 
@@ -94,10 +104,34 @@ export const reducer = (oldState, action) => {
 			)
 
 			// Add or update the engine
-			if (engineToAddIndex > -1) oldState.engines[engineToAddIndex] = value
+			if (engineToAddIndex > -1)
+				oldState.engines[engineToAddIndex] = value
 			else oldState.engines.push(value)
 
 			// return state
+			break
+
+		case "removeEngines":
+			if (!value || !Array.isArray(value)) return oldState
+
+			value.forEach(g => {
+				const engineToRemove = oldState.engines.findIndex(
+					e => e.id === g.id
+				)
+				if (engineToRemove > -1) {
+					try {
+						engineToRemove.engine
+							.quit()
+							.then(() => {})
+							.catch(err => dispatch({ error: err }))
+
+						oldState.engines.splice(engineToRemove, 1)
+					} catch (err) {
+						dispatch({ error: err })
+					}
+				}
+			})
+
 			break
 
 		default:

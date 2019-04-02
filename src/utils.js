@@ -189,9 +189,10 @@ export const updateGames = (dispatch, state) => {
 			}
 
 			// Update games list for games we don't need to play
+			const notMyTurn = apiGames.filter(g => g.myColor !== g.turn)
 			dispatch({
 				type: "updateGames",
-				value: apiGames.filter(g => g.myColor !== g.turn)
+				value: notMyTurn
 			})
 
 			// Check if it's our turn to play any of those games
@@ -216,6 +217,23 @@ export const updateGames = (dispatch, state) => {
 				}
 
 				return false
+			})
+
+			// Remove engines for games that are over
+			const missingGames = apiGames.filter(
+				g => g.id && !localState.games.map(lg => lg.id).includes(g.id)
+			)
+			if (missingGames) {
+				dispatch({
+					type: "removeEngines",
+					value: missingGames
+				})
+			}
+
+			// Remove games that are over
+			dispatch({
+				type: "syncGames",
+				value: apiGames
 			})
 
 			// dispatch({ error: localState.hasInit.toString() })
