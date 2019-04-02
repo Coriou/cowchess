@@ -7,7 +7,7 @@ export default () => {
 	const [{ isComputing, isCheckingGames, computingGames }] = useStore()
 
 	return (
-		<Box>
+		<Box textWrap="truncate-end">
 			<Color bold={isComputing || isCheckingGames} blue>
 				{isCheckingGames ? "Checking chess.com" : null}
 				{isComputing && !computingGames.length ? "Working..." : null}
