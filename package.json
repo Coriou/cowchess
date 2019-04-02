@@ -12,7 +12,7 @@
 		"axios": "^0.18.0",
 		"convert-hrtime": "^2.0.0",
 		"figlet": "^1.2.1",
-		"ink": "^2.1.0",
+		"ink": "^2.1.1",
 		"ink-link": "^1.0.0",
 		"ink-spinner": "^3.0.0",
 		"inquirer": "^6.2.2",
