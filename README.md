@@ -4,10 +4,9 @@ A fun-killing way to play daily chess games on chess.com
 
 ### How ?
 
-- Open `./src/utils.js`
-- In the `updateGames()` method, put your / a chess.com username
 - `yarn start`
-- Beat all your friends until they figure out you’re cheating and you’ll look like an idiot
+- Type your chess.com username
+- Beat everyone
 
 ### Why ?
 
