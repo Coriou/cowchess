@@ -9,7 +9,7 @@
 		"start": "yarn build && node build/main.js"
 	},
 	"dependencies": {
-		"axios": "^0.18.0",
+		"axios": "^0.21.1",
 		"convert-hrtime": "^2.0.0",
 		"figlet": "^1.2.1",
 		"ink": "^2.1.1",
